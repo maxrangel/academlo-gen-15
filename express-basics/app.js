@@ -1,0 +1,22 @@
+const express = require('express');
+
+// Dummy data
+const users = [
+	{ id: 1, name: 'Max', age: 23 },
+	{ id: 2, name: 'John', age: 24 },
+	{ id: 3, name: 'Joe', age: 25 },
+];
+
+const posts = [
+	{ id: 1, title: 'Post 1', content: 'This is post 1' },
+	{ id: 2, title: 'Post 2', content: 'This is post 2' },
+	{ id: 3, title: 'Post 3', content: 'This is post 3' },
+];
+
+// Init our Express app
+const app = express();
+
+// Set server to listen
+app.listen(4000, () => {
+	console.log('Express app running!');
+});
