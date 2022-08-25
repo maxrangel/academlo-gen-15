@@ -18,19 +18,28 @@ const posts = [
 const server = http.createServer((request, response) => {
 	// const url = request.url
 	// const method = request.method
-
 	const { url, method } = request;
+
+	// Set response content type header
+	response.setHeader('Content-Type', 'application/json');
 
 	// GET /users -> Return users array
 	if (method === 'GET' && url === '/users') {
-		response.setHeader('Content-Type', 'application/json');
 		response.write(JSON.stringify(users));
-		response.end();
+	} else if (method === 'GET' && url === '/posts') {
+		// GET /posts -> Return posts array
+		response.write(JSON.stringify(posts));
+	} else {
+		// Return error message
+		response.write(
+			JSON.stringify({
+				message: `${method} ${url} does not exists in our server`,
+			})
+		);
 	}
 
-	// * TASK: CREATE AN ENDPOINT THAT SENDS BACK THE LIST OF POSTS
-	// * TASK: CREATE AN ELSE THAT CATCHES NON-EXISTING ENDPOINTS ON THE SERVER
-	// * You can send a message to the user in a JSON { message: 'This endpoint doesn't exists' ... }
+	// End the response
+	response.end();
 });
 
 // Listen on localhost:4000
