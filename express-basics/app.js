@@ -32,7 +32,21 @@ app.get('/users', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-	console.log(req.body);
+	const { name, age } = req.body;
+
+	const newUser = {
+		id: Math.floor(Math.random() * 1000),
+		name,
+		age,
+	};
+
+	users.push(newUser);
+
+	// 201 -> Success and a resource has been created
+	res.status(201).json({
+		status: 'success',
+		data: { newUser },
+	});
 });
 
 // Posts endpoints
@@ -46,6 +60,8 @@ app.get('/posts', (req, res) => {
 });
 
 // Set server to listen
-app.listen(4000, () => {
+const PORT = 4000;
+
+app.listen(PORT, () => {
 	console.log('Express app running!');
 });
