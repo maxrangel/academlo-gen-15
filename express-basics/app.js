@@ -59,6 +59,14 @@ app.get('/posts', (req, res) => {
 	});
 });
 
+// Catch non-existing endpoints
+app.all('*', (req, res) => {
+	res.status(404).json({
+		status: 'error',
+		message: `${req.method} ${req.url} does not exists in our server`,
+	});
+});
+
 // Set server to listen
 const PORT = 4000;
 
