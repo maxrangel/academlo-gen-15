@@ -1,5 +1,5 @@
 const express = require('express');
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 // Establish db connection
 const db = new Sequelize({
@@ -9,6 +9,31 @@ const db = new Sequelize({
 	password: 'pass1234',
 	port: 5432,
 	database: 'blogs',
+});
+
+// postgres -> STRING -> varchar
+// mysql -> STRING -> text
+// mssql -> STRING -> char
+
+// Define first model
+db.define('user', {
+	id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	name: {
+		type: DataTypes.STRING,
+	},
+	email: {
+		type: DataTypes.STRING,
+	},
+	password: {
+		type: DataTypes.STRING,
+	},
+	status: {
+		type: DataTypes.STRING,
+	},
 });
 
 db.authenticate()
