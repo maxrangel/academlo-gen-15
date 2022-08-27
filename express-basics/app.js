@@ -9,43 +9,50 @@ const db = new Sequelize({
 	password: 'pass1234',
 	port: 5432,
 	database: 'blogs',
+	logging: false,
 });
 
-// postgres -> STRING -> varchar
-// mysql -> STRING -> text
-// mssql -> STRING -> char
-
 // Define first model
-db.define('user', {
+const User = db.define('user', {
 	id: {
 		type: DataTypes.INTEGER,
 		primaryKey: true,
 		autoIncrement: true,
+		allowNull: false,
 	},
 	name: {
 		type: DataTypes.STRING,
+		allowNull: false,
 	},
 	email: {
 		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true,
 	},
 	password: {
 		type: DataTypes.STRING,
+		allowNull: false,
 	},
 	status: {
 		type: DataTypes.STRING,
+		allowNull: false,
+		defaultValue: 'active',
 	},
 });
+
+// Task: Create Post model
+// 	id: INTEGER, title!: STRING, content!: STRING, userId!: INTEGER, status: STRING 'active'
+
+// Task: Implement the Post model to fetch all the posts in the GET /posts endpoint
+// Task: Implement the Post model to create a new post in the db in the POST /posts endpoint
 
 db.authenticate()
 	.then(() => console.log('Database authenticaded'))
 	.catch(err => console.log(err));
 
-// Dummy data
-const users = [
-	{ id: 1, name: 'Max', age: 23 },
-	{ id: 2, name: 'John', age: 24 },
-	{ id: 3, name: 'Joe', age: 25 },
-];
+db.sync()
+	.then(() => console.log('Database synced'))
+	.catch(err => console.log(err));
 
 const posts = [
 	{ id: 1, title: 'Post 1', content: 'This is post 1' },
@@ -62,31 +69,35 @@ app.use(express.json()); // Middleware
 // Define endpoints
 
 // Users endpoints
-app.get('/users', (req, res) => {
-	res.status(200).json({
-		status: 'success',
-		data: {
-			users,
-		},
-	});
+app.get('/users', async (req, res) => {
+	try {
+		const users = await User.findAll();
+
+		res.status(200).json({
+			status: 'success',
+			data: {
+				users,
+			},
+		});
+	} catch (error) {
+		console.log(error);
+	}
 });
 
-app.post('/users', (req, res) => {
-	const { name, age } = req.body;
+app.post('/users', async (req, res) => {
+	try {
+		const { name, email, password } = req.body;
 
-	const newUser = {
-		id: Math.floor(Math.random() * 1000),
-		name,
-		age,
-	};
+		const newUser = await User.create({ name, email, password });
 
-	users.push(newUser);
-
-	// 201 -> Success and a resource has been created
-	res.status(201).json({
-		status: 'success',
-		data: { newUser },
-	});
+		// 201 -> Success and a resource has been created
+		res.status(201).json({
+			status: 'success',
+			data: { newUser },
+		});
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 // Posts endpoints
