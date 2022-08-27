@@ -1,4 +1,19 @@
 const express = require('express');
+const { Sequelize } = require('sequelize');
+
+// Establish db connection
+const db = new Sequelize({
+	dialect: 'postgres',
+	host: 'localhost',
+	username: 'postgres',
+	password: 'pass1234',
+	port: 5432,
+	database: 'blogs',
+});
+
+db.authenticate()
+	.then(() => console.log('Database authenticaded'))
+	.catch(err => console.log(err));
 
 // Dummy data
 const users = [
