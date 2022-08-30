@@ -1,36 +1,30 @@
 const express = require('express');
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
-// Establish db connection
-const db = new Sequelize({
-	dialect: 'postgres',
-	host: 'localhost',
-	username: 'postgres',
-	password: 'pass1234',
-	port: 5432,
-	database: 'blogs',
-	logging: false,
-});
+// Models
+const { User } = require('./models/user.model');
 
-// Define first model
-const User = db.define('user', {
+// Utils
+const { db } = require('./utils/database.util');
+
+// Define Post model
+const Post = db.define('post', {
 	id: {
 		type: DataTypes.INTEGER,
 		primaryKey: true,
 		autoIncrement: true,
 		allowNull: false,
 	},
-	name: {
+	title: {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	email: {
+	content: {
 		type: DataTypes.STRING,
 		allowNull: false,
-		unique: true,
 	},
-	password: {
-		type: DataTypes.STRING,
+	userId: {
+		type: DataTypes.INTEGER,
 		allowNull: false,
 	},
 	status: {
@@ -40,12 +34,6 @@ const User = db.define('user', {
 	},
 });
 
-// Task: Create Post model
-// 	id: INTEGER, title!: STRING, content!: STRING, userId!: INTEGER, status: STRING 'active'
-
-// Task: Implement the Post model to fetch all the posts in the GET /posts endpoint
-// Task: Implement the Post model to create a new post in the db in the POST /posts endpoint
-
 db.authenticate()
 	.then(() => console.log('Database authenticaded'))
 	.catch(err => console.log(err));
@@ -53,12 +41,6 @@ db.authenticate()
 db.sync()
 	.then(() => console.log('Database synced'))
 	.catch(err => console.log(err));
-
-const posts = [
-	{ id: 1, title: 'Post 1', content: 'This is post 1' },
-	{ id: 2, title: 'Post 2', content: 'This is post 2' },
-	{ id: 3, title: 'Post 3', content: 'This is post 3' },
-];
 
 // Init our Express app
 const app = express();
@@ -101,13 +83,34 @@ app.post('/users', async (req, res) => {
 });
 
 // Posts endpoints
-app.get('/posts', (req, res) => {
-	res.status(200).json({
-		status: 'success',
-		data: {
-			posts,
-		},
-	});
+app.get('/posts', async (req, res) => {
+	try {
+		const posts = await Post.findAll();
+
+		res.status(200).json({
+			status: 'success',
+			data: {
+				posts,
+			},
+		});
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+app.post('/posts', async (req, res) => {
+	try {
+		const { title, content, userId } = req.body;
+
+		const newPost = await Post.create({ title, content, userId });
+
+		res.status(201).json({
+			status: 'success',
+			data: { newPost },
+		});
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 // Catch non-existing endpoints
