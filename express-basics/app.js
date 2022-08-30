@@ -1,38 +1,15 @@
 const express = require('express');
-const { DataTypes } = require('sequelize');
 
 // Models
-const { User } = require('./models/user.model');
+const { Post } = require('./models/post.model');
+
+// Routers
+const { usersRouter } = require('./routes/users.routes');
 
 // Utils
 const { db } = require('./utils/database.util');
 
 // Define Post model
-const Post = db.define('post', {
-	id: {
-		type: DataTypes.INTEGER,
-		primaryKey: true,
-		autoIncrement: true,
-		allowNull: false,
-	},
-	title: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
-	content: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
-	userId: {
-		type: DataTypes.INTEGER,
-		allowNull: false,
-	},
-	status: {
-		type: DataTypes.STRING,
-		allowNull: false,
-		defaultValue: 'active',
-	},
-});
 
 db.authenticate()
 	.then(() => console.log('Database authenticaded'))
@@ -46,43 +23,14 @@ db.sync()
 const app = express();
 
 // Enable Express app to receive JSON data
-app.use(express.json()); // Middleware
+app.use(express.json());
 
 // Define endpoints
-
-// Users endpoints
-app.get('/users', async (req, res) => {
-	try {
-		const users = await User.findAll();
-
-		res.status(200).json({
-			status: 'success',
-			data: {
-				users,
-			},
-		});
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-app.post('/users', async (req, res) => {
-	try {
-		const { name, email, password } = req.body;
-
-		const newUser = await User.create({ name, email, password });
-
-		// 201 -> Success and a resource has been created
-		res.status(201).json({
-			status: 'success',
-			data: { newUser },
-		});
-	} catch (error) {
-		console.log(error);
-	}
-});
+app.use('/users', usersRouter);
 
 // Posts endpoints
+// Task: Create posts router
+// Task: Create post controller and move functions
 app.get('/posts', async (req, res) => {
 	try {
 		const posts = await Post.findAll();
