@@ -4,17 +4,6 @@ const express = require('express');
 const { usersRouter } = require('./routes/users.routes');
 const { postsRouter } = require('./routes/posts.routes');
 
-// Utils
-const { db } = require('./utils/database.util');
-
-db.authenticate()
-	.then(() => console.log('Database authenticaded'))
-	.catch(err => console.log(err));
-
-db.sync()
-	.then(() => console.log('Database synced'))
-	.catch(err => console.log(err));
-
 // Init our Express app
 const app = express();
 
@@ -33,9 +22,4 @@ app.all('*', (req, res) => {
 	});
 });
 
-// Set server to listen
-const PORT = 4000;
-
-app.listen(PORT, () => {
-	console.log('Express app running!');
-});
+module.exports = { app };
