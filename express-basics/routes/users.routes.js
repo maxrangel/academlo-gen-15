@@ -16,6 +16,6 @@ usersRouter.post('/', createUser);
 
 usersRouter.patch('/:id', updateUser);
 
-usersRouter.delete('/', deleteUser);
+usersRouter.delete('/:id', deleteUser);
 
 module.exports = { usersRouter };
