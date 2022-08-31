@@ -32,7 +32,38 @@ const createUser = async (req, res) => {
 	}
 };
 
+const updateUser = async (req, res) => {
+	try {
+		const { name } = req.body;
+		const { id } = req.params;
+
+		// Check if the user exists before update
+		const user = await User.findOne({ where: { id } });
+
+		// If user doesn't exist, send error message
+		if (!user) {
+			return res.status(404).json({
+				status: 'error',
+				message: 'User not found',
+			});
+		}
+
+		const updatedUser = await User.update({ name }, { where: { id } });
+
+		res.status(200).json({
+			status: 'success',
+			data: { updatedUser },
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const deleteUser = async (req, res) => {};
+
 module.exports = {
 	getAllUsers,
 	createUser,
+	updateUser,
+	deleteUser,
 };
