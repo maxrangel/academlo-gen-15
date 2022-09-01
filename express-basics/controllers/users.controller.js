@@ -3,7 +3,9 @@ const { User } = require('../models/user.model');
 
 const getAllUsers = async (req, res) => {
 	try {
-		const users = await User.findAll();
+		const users = await User.findAll({
+			where: { status: 'active' },
+		});
 
 		res.status(200).json({
 			status: 'success',

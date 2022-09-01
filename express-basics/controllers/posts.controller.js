@@ -31,7 +31,57 @@ const createPost = async (req, res) => {
 	}
 };
 
+const updatePost = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { title, content } = req.body;
+
+		const post = await Post.findOne({ where: { id } });
+
+		if (!post) {
+			return res.status(404).json({
+				status: 'error',
+				message: 'Post not found',
+			});
+		}
+
+		await post.update({ title, content });
+
+		res.status(200).json({
+			status: 'success',
+			data: { post },
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const deletePost = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const post = await Post.findOne({ where: { id } });
+
+		if (!post) {
+			return res.status(404).json({
+				status: 'error',
+				message: 'Post not found',
+			});
+		}
+
+		await post.update({ status: 'deleted' });
+
+		res.status(200).json({
+			status: 'success',
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 module.exports = {
 	getAllPosts,
 	createPost,
+	updatePost,
+	deletePost,
 };
