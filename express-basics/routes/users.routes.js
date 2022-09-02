@@ -8,14 +8,17 @@ const {
 	deleteUser,
 } = require('../controllers/users.controller');
 
+// Middlewares
+const { userExists } = require('../middlewares/users.middlewares');
+
 const usersRouter = express.Router();
 
 usersRouter.get('/', getAllUsers);
 
 usersRouter.post('/', createUser);
 
-usersRouter.patch('/:id', updateUser);
+usersRouter.patch('/:id', userExists, updateUser);
 
-usersRouter.delete('/:id', deleteUser);
+usersRouter.delete('/:id', userExists, deleteUser);
 
 module.exports = { usersRouter };
