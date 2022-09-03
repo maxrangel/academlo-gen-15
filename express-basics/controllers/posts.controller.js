@@ -33,17 +33,8 @@ const createPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
 	try {
-		const { id } = req.params;
 		const { title, content } = req.body;
-
-		const post = await Post.findOne({ where: { id } });
-
-		if (!post) {
-			return res.status(404).json({
-				status: 'error',
-				message: 'Post not found',
-			});
-		}
+		const { post } = req;
 
 		await post.update({ title, content });
 
@@ -58,16 +49,7 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
 	try {
-		const { id } = req.params;
-
-		const post = await Post.findOne({ where: { id } });
-
-		if (!post) {
-			return res.status(404).json({
-				status: 'error',
-				message: 'Post not found',
-			});
-		}
+		const { post } = req;
 
 		await post.update({ status: 'deleted' });
 
