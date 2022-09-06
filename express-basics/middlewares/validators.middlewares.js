@@ -4,10 +4,8 @@ const checkValidations = (req, res, next) => {
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
-		// [msg, msg, ...] -> msg. msg. msg. msg.
-		const errorMessages = errors.array().map(err => {
-			return err.msg;
-		});
+		// [{ ..., msg }] -> [msg, msg, ...] -> 'msg. msg. msg. msg'
+		const errorMessages = errors.array().map(err => err.msg);
 
 		const message = errorMessages.join('. ');
 
@@ -39,4 +37,18 @@ const createUserValidators = [
 	checkValidations,
 ];
 
-module.exports = { createUserValidators, checkValidations };
+const createPostValidators = [
+	body('title')
+		.isString()
+		.withMessage('Title must be a string')
+		.isLength({ min: 3 })
+		.withMessage('Title must be at least 3 characters'),
+	body('content')
+		.isString()
+		.withMessage('Content must be a string')
+		.isLength({ min: 3 })
+		.withMessage('Content must be at least 3 characters long'),
+	checkValidations,
+];
+
+module.exports = { createUserValidators, createPostValidators };

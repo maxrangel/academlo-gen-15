@@ -10,12 +10,15 @@ const {
 
 // Middlewares
 const { postExists } = require('../middlewares/posts.middlewares');
+const {
+	createPostValidators,
+} = require('../middlewares/validators.middlewares');
 
 const postsRouter = express.Router();
 
 postsRouter.get('/', getAllPosts);
 
-postsRouter.post('/', createPost);
+postsRouter.post('/', createPostValidators, createPost);
 
 postsRouter.patch('/:id', postExists, updatePost);
 
