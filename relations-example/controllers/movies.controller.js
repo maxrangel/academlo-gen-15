@@ -1,13 +1,8 @@
 // Models
 const { Movie } = require('../models/movie.model');
-const { Actor } = require('../models/actor.model');
-const { ActorInMovie } = require('../models/actorInMovie.model');
 
 const getAllMovies = async (req, res, next) => {
-	const movies = await Movie.findAll({
-		where: { status: 'active' },
-		include: Actor,
-	});
+	const movies = await Movie.findAll();
 
 	res.status(200).json({
 		status: 'success',
