@@ -1,5 +1,6 @@
 // Models
 const { Actor } = require('../models/actor.model');
+const { ActorInMovie } = require('../models/actorInMovie.model');
 
 const getAllActors = async (req, res, next) => {
 	try {
@@ -47,8 +48,24 @@ const createActor = async (req, res, next) => {
 	}
 };
 
+const assignActorToMovie = async (req, res) => {
+	try {
+		const { movieId, actorId } = req.body;
+
+		const actorInMovie = await ActorInMovie.create({ movieId, actorId });
+
+		res.status(201).json({
+			status: 'success',
+			data: { actorInMovie },
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 module.exports = {
 	getAllActors,
 	getActorById,
 	createActor,
+	assignActorToMovie,
 };

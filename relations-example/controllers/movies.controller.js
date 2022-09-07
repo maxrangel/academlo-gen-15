@@ -1,8 +1,12 @@
 // Models
 const { Movie } = require('../models/movie.model');
+const { Review } = require('../models/review.model');
+const { Actor } = require('../models/actor.model');
 
 const getAllMovies = async (req, res, next) => {
-	const movies = await Movie.findAll();
+	const movies = await Movie.findAll({
+		include: [{ model: Review }, { model: Actor }],
+	});
 
 	res.status(200).json({
 		status: 'success',
