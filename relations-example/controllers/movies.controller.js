@@ -2,10 +2,19 @@
 const { Movie } = require('../models/movie.model');
 const { Review } = require('../models/review.model');
 const { Actor } = require('../models/actor.model');
+const { User } = require('../models/user.model');
 
 const getAllMovies = async (req, res, next) => {
 	const movies = await Movie.findAll({
-		include: [{ model: Review }, { model: Actor }],
+		attributes: ['id', 'title', 'description'],
+		include: [
+			{
+				model: Review,
+				attributes: ['id', 'comment', 'createdAt'],
+				include: { model: User, attributes: ['id', 'name'] },
+			},
+			{ model: Actor, attributes: ['id', 'name'] },
+		],
 	});
 
 	res.status(200).json({

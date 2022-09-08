@@ -1,11 +1,7 @@
 const { app } = require('./app');
 
-// Models
-const { Movie } = require('./models/movie.model');
-const { Review } = require('./models/review.model');
-const { Actor } = require('./models/actor.model');
-
 // Utils
+const { initModels } = require('./models/initModels');
 const { db } = require('./util/database.util');
 
 const startServer = async () => {
@@ -14,20 +10,7 @@ const startServer = async () => {
 		await db.authenticate();
 
 		// Establish models relations
-
-		// 1 Movie <----> M Review
-		Movie.hasMany(Review, { foreignKey: 'movieId' });
-		Review.belongsTo(Movie);
-
-		// M Movie <----> M Actor
-		Movie.belongsToMany(Actor, {
-			through: 'actorInMovie',
-			foreignKey: 'movieId',
-		});
-		Actor.belongsToMany(Movie, {
-			through: 'actorInMovie',
-			foreignKey: 'actorId',
-		});
+		initModels();
 
 		// Database synced
 		await db.sync();
