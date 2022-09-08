@@ -14,7 +14,7 @@ app.use(express.json());
 // Define endpoints
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/posts', postsRouter);
-app.use('api/v1/comments', commentsRouter);
+app.use('/api/v1/comments', commentsRouter);
 
 // Catch non-existing endpoints
 app.all('*', (req, res) => {

@@ -3,6 +3,9 @@ const { Comment } = require('../models/comment.model');
 
 const getAllComments = async (req, res) => {
 	try {
+		// Include the user that wrote the comment
+		// Include the post that the comment was made on
+		// Include the author of the post where the comment was made on
 		const comments = await Comment.findAll();
 
 		res.status(200).json({

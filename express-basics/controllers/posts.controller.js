@@ -1,9 +1,20 @@
 // Models
 const { Post } = require('../models/post.model');
+const { User } = require('../models/user.model');
+const { Comment } = require('../models/comment.model');
 
 const getAllPosts = async (req, res) => {
 	try {
-		const posts = await Post.findAll();
+		const posts = await Post.findAll({
+			attributes: ['id', 'title', 'content', 'createdAt'],
+			include: [
+				{ model: User, attributes: ['id', 'name'] },
+				{
+					model: Comment,
+					attributes: ['id', 'comment', 'createdAt'],
+				},
+			],
+		});
 
 		res.status(200).json({
 			status: 'success',
