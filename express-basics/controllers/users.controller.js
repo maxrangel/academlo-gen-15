@@ -1,14 +1,24 @@
 // Models
 const { User } = require('../models/user.model');
+const { Post } = require('../models/post.model');
+const { Comment } = require('../models/comment.model');
 
 const getAllUsers = async (req, res) => {
 	try {
-		// Include all the post that the user has created
-		// Include the comments of the users' posts
-		// Include the author of each comment
-		// Include all the comments that the user has created
 		const users = await User.findAll({
 			where: { status: 'active' },
+			include: [
+				{
+					model: Post,
+					include: {
+						model: Comment,
+						include: { model: User },
+					},
+				},
+				{
+					model: Comment,
+				},
+			],
 		});
 
 		res.status(200).json({
