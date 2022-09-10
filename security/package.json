@@ -1,0 +1,22 @@
+{
+	"name": "security-basics",
+	"version": "1.0.0",
+	"description": "A simple Express server",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon server.js"
+	},
+	"author": "Maximiliano Rangel",
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "^16.0.2",
+		"express": "^4.18.1",
+		"express-validator": "^6.14.2",
+		"pg": "^8.8.0",
+		"pg-hstore": "^2.3.4",
+		"sequelize": "^6.21.4"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19"
+	}
+}
