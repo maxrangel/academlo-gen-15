@@ -20,6 +20,11 @@ const User = db.define('user', {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	role: {
+		type: DataTypes.STRING,
+		defaultValue: 'normal',
+		allowNull: false,
+	},
 	status: {
 		type: DataTypes.STRING,
 		allowNull: false,

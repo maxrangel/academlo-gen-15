@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 // Models
 const { User } = require('../models/user.model');
 const { Post } = require('../models/post.model');
@@ -36,7 +38,18 @@ const createUser = async (req, res) => {
 	try {
 		const { name, email, password } = req.body;
 
-		const newUser = await User.create({ name, email, password });
+		// Encrypt the password
+		const salt = await bcrypt.genSalt(12);
+		const hashedPassword = await bcrypt.hash(password, salt);
+
+		const newUser = await User.create({
+			name,
+			email,
+			password: hashedPassword,
+		});
+
+		// Remove password from response
+		newUser.password = undefined;
 
 		// 201 -> Success and a resource has been created
 		res.status(201).json({
