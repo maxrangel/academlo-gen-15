@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Models
 const { User } = require('../models/user.model');
@@ -122,9 +123,12 @@ const login = async (req, res) => {
 		// Remove password from response
 		user.password = undefined;
 
+		// Generate JWT
+		const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '5m' });
+
 		res.status(200).json({
 			status: 'success',
-			data: { user },
+			data: { user, token },
 		});
 	} catch (error) {
 		console.log(error);
