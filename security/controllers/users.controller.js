@@ -29,7 +29,20 @@ const getAllUsers = async (req, res) => {
 		}
 
 		// Verify the token
+		const decoded = jwt.verify(token, 'secret');
+
 		// Verify the token's owner
+		const user = await User.findOne({
+			where: { id: decoded.id, status: 'active' },
+		});
+
+		if (!user) {
+			return res.status(403).json({
+				status: 'error',
+				message: 'The owner of the session is no longer active',
+			});
+		}
+
 		// Grant access
 
 		const users = await User.findAll({
