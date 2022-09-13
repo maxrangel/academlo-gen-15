@@ -8,6 +8,30 @@ const { Comment } = require('../models/comment.model');
 
 const getAllUsers = async (req, res) => {
 	try {
+		// Get token
+		let token;
+
+		if (
+			req.headers.authorization &&
+			req.headers.authorization.startsWith('Bearer')
+		) {
+			// Extract token
+			// req.headers.authorization = 'Bearer token'
+			token = req.headers.authorization.split(' ')[1]; // -> [Bearer, token]
+		}
+
+		// Check if the token was sent or not
+		if (!token) {
+			return res.status(403).json({
+				status: 'error',
+				message: 'Invalid session',
+			});
+		}
+
+		// Verify the token
+		// Verify the token's owner
+		// Grant access
+
 		const users = await User.findAll({
 			where: { status: 'active' },
 			include: [
@@ -123,7 +147,7 @@ const login = async (req, res) => {
 		// Remove password from response
 		user.password = undefined;
 
-		// Generate JWT
+		// Generate JWT (payload, secretOrPrivateKey, options)
 		const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '5m' });
 
 		res.status(200).json({
