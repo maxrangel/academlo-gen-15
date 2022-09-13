@@ -12,17 +12,21 @@ const {
 
 // Middlewares
 const { userExists } = require('../middlewares/users.middlewares');
+const { protectSession } = require('../middlewares/auth.middlewares');
 const {
 	createUserValidators,
 } = require('../middlewares/validators.middlewares');
 
 const usersRouter = express.Router();
 
-usersRouter.get('/', getAllUsers);
-
 usersRouter.post('/', createUserValidators, createUser);
 
 usersRouter.post('/login', login);
+
+// Protecting below endpoints
+usersRouter.use(protectSession);
+
+usersRouter.get('/', getAllUsers);
 
 usersRouter.patch('/:id', userExists, updateUser);
 

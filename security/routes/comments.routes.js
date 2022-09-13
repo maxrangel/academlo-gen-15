@@ -10,8 +10,11 @@ const {
 
 // Middlewares
 const { commentExists } = require('../middlewares/comments.middlewares');
+const { protectSession } = require('../middlewares/auth.middlewares');
 
 const commentsRouter = express.Router();
+
+commentsRouter.use(protectSession);
 
 commentsRouter.get('/', getAllComments);
 

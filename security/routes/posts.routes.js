@@ -10,11 +10,14 @@ const {
 
 // Middlewares
 const { postExists } = require('../middlewares/posts.middlewares');
+const { protectSession } = require('../middlewares/auth.middlewares');
 const {
 	createPostValidators,
 } = require('../middlewares/validators.middlewares');
 
 const postsRouter = express.Router();
+
+postsRouter.use(protectSession);
 
 postsRouter.get('/', getAllPosts);
 
