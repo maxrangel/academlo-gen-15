@@ -68,6 +68,9 @@ const protectUsersAccount = (req, res, next) => {
 	next();
 };
 
+// Create middleware to protect posts, only owners should be able to update/delete
+// Create middleware to protect comments, only owners should be able to update/delete
+
 module.exports = {
 	protectSession,
 	protectUsersAccount,
