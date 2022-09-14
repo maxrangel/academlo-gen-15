@@ -51,10 +51,24 @@ const protectSession = async (req, res, next) => {
 	}
 };
 
-// Create a middleware to protect the users accounts
 // Check the sessionUser to compare to the one that wants to be updated/deleted
-// If the users (ids) don't match, send an error, otherwise continue
+const protectUsersAccount = (req, res, next) => {
+	const { sessionUser, user } = req;
+	// const { id } = req.params;
+
+	// If the users (ids) don't match, send an error, otherwise continue
+	if (sessionUser.id !== user.id) {
+		return res.status(403).json({
+			status: 'error',
+			message: 'You are not the owner of this account.',
+		});
+	}
+
+	// If the ids match, grant access
+	next();
+};
 
 module.exports = {
 	protectSession,
+	protectUsersAccount,
 };

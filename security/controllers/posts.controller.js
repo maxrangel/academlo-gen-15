@@ -29,9 +29,14 @@ const getAllPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
 	try {
-		const { title, content, userId } = req.body;
+		const { title, content } = req.body;
+		const { sessionUser } = req;
 
-		const newPost = await Post.create({ title, content, userId });
+		const newPost = await Post.create({
+			title,
+			content,
+			userId: sessionUser.id,
+		});
 
 		res.status(201).json({
 			status: 'success',

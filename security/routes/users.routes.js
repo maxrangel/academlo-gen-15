@@ -12,7 +12,10 @@ const {
 
 // Middlewares
 const { userExists } = require('../middlewares/users.middlewares');
-const { protectSession } = require('../middlewares/auth.middlewares');
+const {
+	protectSession,
+	protectUsersAccount,
+} = require('../middlewares/auth.middlewares');
 const {
 	createUserValidators,
 } = require('../middlewares/validators.middlewares');
@@ -28,8 +31,8 @@ usersRouter.use(protectSession);
 
 usersRouter.get('/', getAllUsers);
 
-usersRouter.patch('/:id', userExists, updateUser);
+usersRouter.patch('/:id', userExists, protectUsersAccount, updateUser);
 
-usersRouter.delete('/:id', userExists, deleteUser);
+usersRouter.delete('/:id', userExists, protectUsersAccount, deleteUser);
 
 module.exports = { usersRouter };

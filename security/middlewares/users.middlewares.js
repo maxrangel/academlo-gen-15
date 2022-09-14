@@ -5,7 +5,10 @@ const userExists = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
-		const user = await User.findOne({ where: { id } });
+		const user = await User.findOne({
+			attributes: { exclude: ['password'] },
+			where: { id },
+		});
 
 		// If user doesn't exist, send error message
 		if (!user) {

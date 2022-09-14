@@ -15,6 +15,7 @@ dotenv.config({ path: './config.env' });
 const getAllUsers = async (req, res) => {
 	try {
 		const users = await User.findAll({
+			attributes: { exclude: ['password'] },
 			where: { status: 'active' },
 			include: [
 				{
