@@ -97,10 +97,23 @@ const protectCommentsOwners = (req, res, next) => {
 };
 
 // Create middleware that only grants access to admin users
+const protectAdmin = (req, res, next) => {
+	const { sessionUser } = req;
+
+	if (sessionUser.role !== 'admin') {
+		return res.status(403).json({
+			status: 'error',
+			message: 'You do not have the access level for this data.',
+		});
+	}
+
+	next();
+};
 
 module.exports = {
 	protectSession,
 	protectUsersAccount,
 	protectPostsOwners,
 	protectCommentsOwners,
+	protectAdmin,
 };

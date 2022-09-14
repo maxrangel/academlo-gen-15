@@ -14,6 +14,7 @@ const { userExists } = require('../middlewares/users.middlewares');
 const {
 	protectSession,
 	protectUsersAccount,
+	protectAdmin,
 } = require('../middlewares/auth.middlewares');
 const {
 	createUserValidators,
@@ -28,7 +29,7 @@ usersRouter.post('/login', login);
 // Protecting below endpoints
 usersRouter.use(protectSession);
 
-usersRouter.get('/', getAllUsers);
+usersRouter.get('/', protectAdmin, getAllUsers);
 
 usersRouter.patch('/:id', userExists, protectUsersAccount, updateUser);
 
