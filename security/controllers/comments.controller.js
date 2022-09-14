@@ -27,9 +27,14 @@ const getAllComments = async (req, res) => {
 
 const createComment = async (req, res) => {
 	try {
-		const { comment, userId, postId } = req.body;
+		const { comment, postId } = req.body;
+		const { sessionUser } = req;
 
-		const newComment = await Comment.create({ comment, userId, postId });
+		const newComment = await Comment.create({
+			comment,
+			userId: sessionUser.id,
+			postId,
+		});
 
 		res.status(201).json({
 			status: 'success',

@@ -10,7 +10,10 @@ const {
 
 // Middlewares
 const { postExists } = require('../middlewares/posts.middlewares');
-const { protectSession } = require('../middlewares/auth.middlewares');
+const {
+	protectSession,
+	protectPostsOwners,
+} = require('../middlewares/auth.middlewares');
 const {
 	createPostValidators,
 } = require('../middlewares/validators.middlewares');
@@ -23,8 +26,8 @@ postsRouter.get('/', getAllPosts);
 
 postsRouter.post('/', createPostValidators, createPost);
 
-postsRouter.patch('/:id', postExists, updatePost);
+postsRouter.patch('/:id', postExists, protectPostsOwners, updatePost);
 
-postsRouter.delete('/:id', postExists, deletePost);
+postsRouter.delete('/:id', postExists, protectPostsOwners, deletePost);
 
 module.exports = { postsRouter };

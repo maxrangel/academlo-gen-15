@@ -69,9 +69,38 @@ const protectUsersAccount = (req, res, next) => {
 };
 
 // Create middleware to protect posts, only owners should be able to update/delete
+const protectPostsOwners = (req, res, next) => {
+	const { sessionUser, post } = req;
+
+	if (sessionUser.id !== post.userId) {
+		return res.status(403).json({
+			status: 'error',
+			message: 'This post does not belong to you.',
+		});
+	}
+
+	next();
+};
+
 // Create middleware to protect comments, only owners should be able to update/delete
+const protectCommentsOwners = (req, res, next) => {
+	const { sessionUser, comment } = req;
+
+	if (sessionUser.id !== comment.userId) {
+		return res.status(403).json({
+			status: 'error',
+			message: 'This comment does not belong to you.',
+		});
+	}
+
+	next();
+};
+
+// Create middleware that only grants access to admin users
 
 module.exports = {
 	protectSession,
 	protectUsersAccount,
+	protectPostsOwners,
+	protectCommentsOwners,
 };

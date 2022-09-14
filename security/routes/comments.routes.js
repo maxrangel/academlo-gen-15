@@ -10,7 +10,10 @@ const {
 
 // Middlewares
 const { commentExists } = require('../middlewares/comments.middlewares');
-const { protectSession } = require('../middlewares/auth.middlewares');
+const {
+	protectSession,
+	protectCommentsOwners,
+} = require('../middlewares/auth.middlewares');
 
 const commentsRouter = express.Router();
 
@@ -20,8 +23,18 @@ commentsRouter.get('/', getAllComments);
 
 commentsRouter.post('/', createComment);
 
-commentsRouter.patch('/:id', commentExists, updateComment);
+commentsRouter.patch(
+	'/:id',
+	commentExists,
+	protectCommentsOwners,
+	updateComment
+);
 
-commentsRouter.delete('/:id', commentExists, deleteComment);
+commentsRouter.delete(
+	'/:id',
+	commentExists,
+	protectCommentsOwners,
+	deleteComment
+);
 
 module.exports = { commentsRouter };
