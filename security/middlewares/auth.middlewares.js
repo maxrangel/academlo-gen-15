@@ -44,11 +44,16 @@ const protectSession = async (req, res, next) => {
 		}
 
 		// Grant access
+		req.sessionUser = user;
 		next();
 	} catch (error) {
 		console.log(error);
 	}
 };
+
+// Create a middleware to protect the users accounts
+// Check the sessionUser to compare to the one that wants to be updated/deleted
+// If the users (ids) don't match, send an error, otherwise continue
 
 module.exports = {
 	protectSession,
