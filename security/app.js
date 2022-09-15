@@ -12,9 +12,19 @@ const app = express();
 app.use(express.json());
 
 // Define endpoints
+// /posts
 app.use('/api/v1/users', usersRouter);
-app.use('/api/v1/posts', postsRouter);
+app.use('/api/v1/posts', postsRouter); // next(error)
 app.use('/api/v1/comments', commentsRouter);
+
+// Global error handler
+app.use((error, req, res, next) => {
+	res.status(400).json({
+		status: 'error',
+		message: error.message,
+		error,
+	});
+});
 
 // Catch non-existing endpoints
 app.all('*', (req, res) => {

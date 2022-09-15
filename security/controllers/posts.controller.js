@@ -3,7 +3,7 @@ const { Post } = require('../models/post.model');
 const { User } = require('../models/user.model');
 const { Comment } = require('../models/comment.model');
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res, next) => {
 	try {
 		const posts = await Post.findAll({
 			where: { status: 'active' },
@@ -26,7 +26,7 @@ const getAllPosts = async (req, res) => {
 			},
 		});
 	} catch (error) {
-		console.log(error);
+		next(error);
 	}
 };
 
