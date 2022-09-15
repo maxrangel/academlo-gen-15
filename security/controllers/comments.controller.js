@@ -3,80 +3,64 @@ const { Comment } = require('../models/comment.model');
 const { Post } = require('../models/post.model');
 const { User } = require('../models/user.model');
 
-const getAllComments = async (req, res) => {
-	try {
-		const comments = await Comment.findAll({
-			include: [
-				{
-					model: User,
-				},
-				{ model: Post, include: { model: User } },
-			],
-		});
+// Utils
+const { catchAsync } = require('../utils/catchAsync.util');
 
-		res.status(200).json({
-			status: 'success',
-			data: {
-				comments,
+const getAllComments = catchAsync(async (req, res, next) => {
+	const comments = await Comment.findAll({
+		include: [
+			{
+				model: User,
 			},
-		});
-	} catch (error) {
-		res.status(400).json({
-			status: 'error',
-			message: error.message,
-		});
-	}
-};
+			{ model: Post, include: { model: User } },
+		],
+	});
 
-const createComment = async (req, res) => {
-	try {
-		const { comment, postId } = req.body;
-		const { sessionUser } = req;
+	res.status(200).json({
+		status: 'success',
+		data: {
+			comments,
+		},
+	});
+});
 
-		const newComment = await Comment.create({
-			comment,
-			userId: sessionUser.id,
-			postId,
-		});
+const createComment = catchAsync(async (req, res, next) => {
+	const { comment, postId } = req.body;
+	const { sessionUser } = req;
 
-		res.status(201).json({
-			status: 'success',
-			data: { newComment },
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
+	const newComment = await Comment.create({
+		comment,
+		userId: sessionUser.id,
+		postId,
+	});
 
-const updateComment = async (req, res) => {
-	try {
-		const { newComment } = req.body;
-		const { comment } = req;
+	res.status(201).json({
+		status: 'success',
+		data: { newComment },
+	});
+});
 
-		await comment.update({ comment: newComment });
+const updateComment = catchAsync(async (req, res, next) => {
+	const { newComment } = req.body;
+	const { comment } = req;
 
-		res.status(200).json({
-			status: 'success',
-			data: { comment },
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
+	await comment.update({ comment: newComment });
 
-const deleteComment = async (req, res) => {
-	try {
-		const { comment } = req;
+	res.status(200).json({
+		status: 'success',
+		data: { comment },
+	});
+});
 
-		await comment.update({ status: 'deleted' });
+const deleteComment = catchAsync(async (req, res, next) => {
+	const { comment } = req;
 
-		res.status(200).json({
-			status: 'success',
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
+	await comment.update({ status: 'deleted' });
+
+	res.status(200).json({
+		status: 'success',
+	});
+});
 
 module.exports = {
 	getAllComments,

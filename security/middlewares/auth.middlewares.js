@@ -4,13 +4,10 @@ const dotenv = require('dotenv');
 // Models
 const { User } = require('../models/user.model');
 
-dotenv.config({ path: './config.env' });
+// Utils
+const { catchAsync } = require('../utils/catchAsync.util');
 
-const catchAsync = fn => {
-	return (req, res, next) => {
-		fn(req, res, next).catch(err => next(err));
-	};
-};
+dotenv.config({ path: './config.env' });
 
 const protectSession = catchAsync(async (req, res, next) => {
 	// Get token

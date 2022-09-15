@@ -1,24 +1,23 @@
 // Models
 const { Comment } = require('../models/comment.model');
 
-const commentExists = async (req, res, next) => {
-	try {
-		const { id } = req.params;
+// Utils
+const { catchAsync } = require('../utils/catchAsync.util');
 
-		const comment = await Comment.findOne({ where: { id } });
+const commentExists = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
 
-		if (!comment) {
-			return res.status(404).json({
-				status: 'error',
-				message: 'Comment not found',
-			});
-		}
+	const comment = await Comment.findOne({ where: { id } });
 
-		req.comment = comment;
-		next();
-	} catch (error) {
-		console.log(error);
+	if (!comment) {
+		return res.status(404).json({
+			status: 'error',
+			message: 'Comment not found',
+		});
 	}
-};
+
+	req.comment = comment;
+	next();
+});
 
 module.exports = { commentExists };

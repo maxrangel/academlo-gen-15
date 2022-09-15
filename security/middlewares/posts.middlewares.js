@@ -1,24 +1,23 @@
 // Models
 const { Post } = require('../models/post.model');
 
-const postExists = async (req, res, next) => {
-	try {
-		const { id } = req.params;
+// Utils
+const { catchAsync } = require('../utils/catchAsync.util');
 
-		const post = await Post.findOne({ where: { id } });
+const postExists = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
 
-		if (!post) {
-			return res.status(404).json({
-				status: 'error',
-				message: 'Post not found',
-			});
-		}
+	const post = await Post.findOne({ where: { id } });
 
-		req.post = post;
-		next();
-	} catch (error) {
-		console.log(error);
+	if (!post) {
+		return res.status(404).json({
+			status: 'error',
+			message: 'Post not found',
+		});
 	}
-};
+
+	req.post = post;
+	next();
+});
 
 module.exports = { postExists };
