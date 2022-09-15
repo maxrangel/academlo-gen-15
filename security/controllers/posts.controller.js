@@ -6,12 +6,15 @@ const { Comment } = require('../models/comment.model');
 const getAllPosts = async (req, res) => {
 	try {
 		const posts = await Post.findAll({
+			where: { status: 'active' },
 			attributes: ['id', 'title', 'content', 'createdAt'],
 			include: [
 				{ model: User, attributes: ['id', 'name'] },
 				{
 					model: Comment,
-					attributes: ['id', 'comment', 'createdAt'],
+					required: false, // Apply OUTER JOIN
+					where: { status: 'active' },
+					attributes: ['id', 'comment', 'status', 'createdAt'],
 				},
 			],
 		});
