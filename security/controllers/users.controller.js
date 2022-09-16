@@ -7,6 +7,10 @@ const { User } = require('../models/user.model');
 const { Post } = require('../models/post.model');
 const { Comment } = require('../models/comment.model');
 
+// Utils
+const { catchAsync } = require('../utils/catchAsync.util');
+const { AppError } = require('../utils/appError.util');
+
 dotenv.config({ path: './config.env' });
 
 // Gen random jwt signs
@@ -42,40 +46,36 @@ const getAllUsers = async (req, res) => {
 	}
 };
 
-const createUser = async (req, res) => {
-	try {
-		const { name, email, password, role } = req.body;
+const createUser = catchAsync(async (req, res, next) => {
+	const { name, email, password, role } = req.body;
 
-		if (role !== 'admin' && role !== 'normal') {
-			return res.status(400).json({
-				status: 'error',
-				message: 'Invalid role',
-			});
-		}
-
-		// Encrypt the password
-		const salt = await bcrypt.genSalt(12);
-		const hashedPassword = await bcrypt.hash(password, salt);
-
-		const newUser = await User.create({
-			name,
-			email,
-			password: hashedPassword,
-			role,
+	if (role !== 'admin' && role !== 'normal') {
+		return res.status(400).json({
+			status: 'error',
+			message: 'Invalid role',
 		});
-
-		// Remove password from response
-		newUser.password = undefined;
-
-		// 201 -> Success and a resource has been created
-		res.status(201).json({
-			status: 'success',
-			data: { newUser },
-		});
-	} catch (error) {
-		console.log(error);
 	}
-};
+
+	// Encrypt the password
+	const salt = await bcrypt.genSalt(12);
+	const hashedPassword = await bcrypt.hash(password, salt);
+
+	const newUser = await User.create({
+		name,
+		email,
+		password: hashedPassword,
+		role,
+	});
+
+	// Remove password from response
+	newUser.password = undefined;
+
+	// 201 -> Success and a resource has been created
+	res.status(201).json({
+		status: 'success',
+		data: { newUser },
+	});
+});
 
 const updateUser = async (req, res) => {
 	try {
@@ -116,41 +116,34 @@ const deleteUser = async (req, res) => {
 	}
 };
 
-const login = async (req, res) => {
-	try {
-		// Get email and password from req.body
-		const { email, password } = req.body;
+const login = catchAsync(async (req, res, next) => {
+	// Get email and password from req.body
+	const { email, password } = req.body;
 
-		// Validate if the user exist with given email
-		const user = await User.findOne({
-			where: { email, status: 'active' },
-		});
+	// Validate if the user exist with given email
+	const user = await User.findOne({
+		where: { email, status: 'active' },
+	});
 
-		// Compare passwords (entered password vs db password)
-		// If user doesn't exists or passwords doesn't match, send error
-		if (!user || !(await bcrypt.compare(password, user.password))) {
-			return res.status(400).json({
-				status: 'error',
-				message: 'Wrong credentials',
-			});
-		}
-
-		// Remove password from response
-		user.password = undefined;
-
-		// Generate JWT (payload, secretOrPrivateKey, options)
-		const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-			expiresIn: '30d',
-		});
-
-		res.status(200).json({
-			status: 'success',
-			data: { user, token },
-		});
-	} catch (error) {
-		console.log(error);
+	// Compare passwords (entered password vs db password)
+	// If user doesn't exists or passwords doesn't match, send error
+	if (!user || !(await bcrypt.compare(password, user.password))) {
+		return next(new AppError('Wrong credentials', 400));
 	}
-};
+
+	// Remove password from response
+	user.password = undefined;
+
+	// Generate JWT (payload, secretOrPrivateKey, options)
+	const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+		expiresIn: '30d',
+	});
+
+	res.status(200).json({
+		status: 'success',
+		data: { user, token },
+	});
+});
 
 module.exports = {
 	getAllUsers,

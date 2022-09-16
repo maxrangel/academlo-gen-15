@@ -15,8 +15,8 @@ const userExists = catchAsync(async (req, res, next) => {
 	// If user doesn't exist, send error message
 	if (!user) {
 		return res.status(404).json({
-			status: 'error',
-			message: 'User not found',
+			status: 'err',
+			msg: 'User not found',
 		});
 	}
 

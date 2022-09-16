@@ -19,10 +19,14 @@ app.use('/api/v1/comments', commentsRouter);
 
 // Global error handler
 app.use((error, req, res, next) => {
-	res.status(400).json({
-		status: 'error',
+	const statusCode = error.statusCode || 500;
+	const status = error.status || 'fail';
+
+	res.status(statusCode).json({
+		status,
 		message: error.message,
 		error,
+		stack: error.stack,
 	});
 });
 
