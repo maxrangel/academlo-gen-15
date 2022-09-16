@@ -16,35 +16,29 @@ dotenv.config({ path: './config.env' });
 // Gen random jwt signs
 // require('crypto').randomBytes(64).toString('hex') -> Enter into the node console and paste the command
 
-const getAllUsers = async (req, res) => {
-	try {
-		const users = await User.findAll({
-			attributes: { exclude: ['password'] },
-			where: { status: 'active' },
-			include: [
-				{
-					model: Post,
-					include: {
-						model: Comment,
-						include: { model: User },
-					},
-				},
-				{
+const getAllUsers = catchAsync(async (req, res, next) => {
+	const users = await User.findAll({
+		attributes: { exclude: ['password'] },
+		where: { status: 'active' },
+		include: [
+			{
+				model: Post,
+				include: {
 					model: Comment,
+					include: { model: User },
 				},
-			],
-		});
-
-		res.status(200).json({
-			status: 'success',
-			data: {
-				users,
 			},
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
+			{
+				model: Comment,
+			},
+		],
+	});
+
+	res.status(200).json({
+		status: 'success',
+		data: { users },
+	});
+});
 
 const createUser = catchAsync(async (req, res, next) => {
 	const { name, email, password, role } = req.body;
@@ -77,44 +71,36 @@ const createUser = catchAsync(async (req, res, next) => {
 	});
 });
 
-const updateUser = async (req, res) => {
-	try {
-		const { name } = req.body;
-		const { user } = req;
+const updateUser = catchAsync(async (req, res, next) => {
+	const { name } = req.body;
+	const { user } = req;
 
-		// Method 1: Update by using the model
-		// await User.update({ name }, { where: { id } });
+	// Method 1: Update by using the model
+	// await User.update({ name }, { where: { id } });
 
-		// Method 2: Update using a model's instance
-		await user.update({ name });
+	// Method 2: Update using a model's instance
+	await user.update({ name });
 
-		res.status(200).json({
-			status: 'success',
-			data: { user },
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
+	res.status(200).json({
+		status: 'success',
+		data: { user },
+	});
+});
 
-const deleteUser = async (req, res) => {
-	try {
-		const { user } = req;
+const deleteUser = catchAsync(async (req, res, next) => {
+	const { user } = req;
 
-		// Method 1: Delete by using the model
-		// User.destroy({ where: { id } })
+	// Method 1: Delete by using the model
+	// User.destroy({ where: { id } })
 
-		// Method 2: Delete by using the model's instance
-		// await user.destroy();
+	// Method 2: Delete by using the model's instance
+	// await user.destroy();
 
-		// Method 3: Soft delete
-		await user.update({ status: 'deleted' });
+	// Method 3: Soft delete
+	await user.update({ status: 'deleted' });
 
-		res.status(204).json({ status: 'success' });
-	} catch (error) {
-		console.log(error);
-	}
-};
+	res.status(204).json({ status: 'success' });
+});
 
 const login = catchAsync(async (req, res, next) => {
 	// Get email and password from req.body
