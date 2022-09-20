@@ -3,6 +3,7 @@ const { Comment } = require('../models/comment.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync.util');
+const { AppError } = require('../utils/appError.util');
 
 const commentExists = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
@@ -10,10 +11,7 @@ const commentExists = catchAsync(async (req, res, next) => {
 	const comment = await Comment.findOne({ where: { id } });
 
 	if (!comment) {
-		return res.status(404).json({
-			status: 'error',
-			message: 'Comment not found',
-		});
+		return next(new AppError('Comment not found', 404));
 	}
 
 	req.comment = comment;

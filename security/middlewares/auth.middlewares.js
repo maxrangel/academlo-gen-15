@@ -6,6 +6,7 @@ const { User } = require('../models/user.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync.util');
+const { AppError } = require('../utils/appError.util');
 
 dotenv.config({ path: './config.env' });
 
@@ -24,10 +25,7 @@ const protectSession = catchAsync(async (req, res, next) => {
 
 	// Check if the token was sent or not
 	if (!token) {
-		return res.status(403).json({
-			status: 'error',
-			message: 'Invalid session',
-		});
+		return next(new AppError('The token was invalid', 403));
 	}
 
 	// Verify the token
@@ -39,10 +37,9 @@ const protectSession = catchAsync(async (req, res, next) => {
 	});
 
 	if (!user) {
-		return res.status(403).json({
-			status: 'error',
-			message: 'The owner of the session is no longer active',
-		});
+		return next(
+			new AppError('The owner of the session is no longer active', 403)
+		);
 	}
 
 	// Grant access
@@ -57,10 +54,7 @@ const protectUsersAccount = (req, res, next) => {
 
 	// If the users (ids) don't match, send an error, otherwise continue
 	if (sessionUser.id !== user.id) {
-		return res.status(403).json({
-			status: 'error',
-			message: 'You are not the owner of this account.',
-		});
+		return next(new AppError('You are not the owner of this account.', 403));
 	}
 
 	// If the ids match, grant access
@@ -72,10 +66,7 @@ const protectPostsOwners = (req, res, next) => {
 	const { sessionUser, post } = req;
 
 	if (sessionUser.id !== post.userId) {
-		return res.status(403).json({
-			status: 'error',
-			message: 'This post does not belong to you.',
-		});
+		return next(new AppError('This post does not belong to you.', 403));
 	}
 
 	next();
@@ -86,10 +77,7 @@ const protectCommentsOwners = (req, res, next) => {
 	const { sessionUser, comment } = req;
 
 	if (sessionUser.id !== comment.userId) {
-		return res.status(403).json({
-			status: 'error',
-			message: 'This comment does not belong to you.',
-		});
+		return next(new AppError('This comment does not belong to you.', 403));
 	}
 
 	next();
@@ -100,10 +88,7 @@ const protectAdmin = (req, res, next) => {
 	const { sessionUser } = req;
 
 	if (sessionUser.role !== 'admin') {
-		return res.status(403).json({
-			status: 'error',
-			message: 'You do not have the access level for this data.',
-		});
+		return next(new AppError('You do not have the right access level.', 403));
 	}
 
 	next();
