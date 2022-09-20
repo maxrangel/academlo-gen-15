@@ -5,6 +5,9 @@ const { usersRouter } = require('./routes/users.routes');
 const { postsRouter } = require('./routes/posts.routes');
 const { commentsRouter } = require('./routes/comments.routes');
 
+// Controllers
+const { globalErrorHandler } = require('./controllers/error.controller');
+
 // Init our Express app
 const app = express();
 
@@ -18,17 +21,7 @@ app.use('/api/v1/posts', postsRouter); // next(error)
 app.use('/api/v1/comments', commentsRouter);
 
 // Global error handler
-app.use((error, req, res, next) => {
-	const statusCode = error.statusCode || 500;
-	const status = error.status || 'fail';
-
-	res.status(statusCode).json({
-		status,
-		message: error.message,
-		error,
-		stack: error.stack,
-	});
-});
+app.use(globalErrorHandler);
 
 // Catch non-existing endpoints
 app.all('*', (req, res) => {
