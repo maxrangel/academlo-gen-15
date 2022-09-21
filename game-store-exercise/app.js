@@ -2,6 +2,7 @@ const express = require('express');
 
 // Routers
 const { usersRouter } = require('./routes/users.routes');
+const { gamesRouter } = require('./routes/games.routes');
 
 // Controllers
 const { globalErrorHandler } = require('./controllers/error.controller');
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Define endpoints
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/games', gamesRouter);
 
 // Global error handler
 app.use(globalErrorHandler);
