@@ -1,5 +1,6 @@
 // Models
 const { Console } = require('../models/console.model');
+const { Game } = require('../models/game.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync.util');
@@ -17,7 +18,10 @@ const createConsole = catchAsync(async (req, res, next) => {
 });
 
 const getAllConsoles = catchAsync(async (req, res, next) => {
-	const consoles = await Console.findAll({ where: { status: 'active' } });
+	const consoles = await Console.findAll({
+		where: { status: 'active' },
+		include: { model: Game, through: { attributes: [] } },
+	});
 
 	res.status(200).json({
 		status: 'success',
