@@ -18,13 +18,16 @@ const {
 	createPostValidators,
 } = require('../middlewares/validators.middlewares');
 
+// Utils
+const { upload } = require('../utils/multer.util');
+
 const postsRouter = express.Router();
 
 postsRouter.use(protectSession);
 
 postsRouter.get('/', getAllPosts);
 
-postsRouter.post('/', createPostValidators, createPost);
+postsRouter.post('/', upload.single('postImg'), createPost);
 
 postsRouter.patch('/:id', postExists, protectPostsOwners, updatePost);
 

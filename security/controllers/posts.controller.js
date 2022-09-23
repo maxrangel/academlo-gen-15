@@ -31,15 +31,18 @@ const createPost = catchAsync(async (req, res, next) => {
 	const { title, content } = req.body;
 	const { sessionUser } = req;
 
-	const newPost = await Post.create({
-		title,
-		content,
-		userId: sessionUser.id,
-	});
+	console.log(req.body);
+	console.log(req.file);
+
+	// const newPost = await Post.create({
+	// 	title,
+	// 	content,
+	// 	userId: sessionUser.id,
+	// });
 
 	res.status(201).json({
 		status: 'success',
-		data: { newPost },
+		data: {},
 	});
 });
 
