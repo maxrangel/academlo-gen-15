@@ -31,6 +31,7 @@ const createPost = catchAsync(async (req, res, next) => {
 	const { title, content } = req.body;
 	const { sessionUser } = req;
 
+	// 'https://firebase.com/img.png'
 	// const newPost = await Post.create({
 	// 	title,
 	// 	content,
