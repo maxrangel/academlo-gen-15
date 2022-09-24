@@ -31,9 +31,6 @@ const createPost = catchAsync(async (req, res, next) => {
 	const { title, content } = req.body;
 	const { sessionUser } = req;
 
-	console.log(req.body);
-	console.log(req.file);
-
 	// const newPost = await Post.create({
 	// 	title,
 	// 	content,
