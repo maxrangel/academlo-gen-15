@@ -28,13 +28,27 @@ const getAllPosts = catchAsync(async (req, res, next) => {
 		],
 	});
 
-	const imgRef = ref(storage, posts[0].postImgs[0].imgUrl);
+	const postsWithImgsPromises = posts.map(async post => {
+		// Get imgs URLs
+		const postImgsPromises = post.postImgs.map(async postImg => {
+			const imgRef = ref(storage, postImg.imgUrl);
+			const imgUrl = await getDownloadURL(imgRef);
 
-	const imgUrl = await getDownloadURL(imgRef);
+			postImg.imgUrl = imgUrl;
+			return postImg;
+		});
+
+		const postImgs = await Promise.all(postImgsPromises);
+
+		post.postImgs = postImgs;
+		return post;
+	});
+
+	const postsWithImgs = await Promise.all(postsWithImgsPromises);
 
 	res.status(200).json({
 		status: 'success',
-		data: { posts, imgUrl },
+		data: { posts: postsWithImgs },
 	});
 });
 
