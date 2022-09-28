@@ -27,7 +27,10 @@ postsRouter.use(protectSession);
 
 postsRouter.get('/', getAllPosts);
 
-postsRouter.post('/', upload.single('postImg'), createPost);
+// Get only 1 img
+// postsRouter.post('/', upload.single('postImg'), createPost);
+
+postsRouter.post('/', upload.array('postImg', 3), createPost);
 
 postsRouter.patch('/:id', postExists, protectPostsOwners, updatePost);
 

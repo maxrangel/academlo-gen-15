@@ -28,6 +28,7 @@ const getAllPosts = catchAsync(async (req, res, next) => {
 		],
 	});
 
+	// Loop through posts to get to the postImgs
 	const postsWithImgsPromises = posts.map(async post => {
 		// Get imgs URLs
 		const postImgsPromises = post.postImgs.map(async postImg => {
@@ -38,8 +39,10 @@ const getAllPosts = catchAsync(async (req, res, next) => {
 			return postImg;
 		});
 
+		// Resolve imgs urls
 		const postImgs = await Promise.all(postImgsPromises);
 
+		// Update old postImgs array with new array
 		post.postImgs = postImgs;
 		return post;
 	});
@@ -62,19 +65,24 @@ const createPost = catchAsync(async (req, res, next) => {
 		userId: sessionUser.id,
 	});
 
-	// Create firebase reference
-	const [originalName, ext] = req.file.originalname.split('.'); // -> [pug, jpg]
+	// Map async -> Async operations with arrays
+	const postImgsPromises = req.files.map(async file => {
+		// Create firebase reference
+		const [originalName, ext] = file.originalname.split('.'); // -> [pug, jpg]
 
-	const filename = `posts/${newPost.id}/${originalName}-${Date.now()}.${ext}`;
-	const imgRef = ref(storage, filename);
+		const filename = `posts/${newPost.id}/${originalName}-${Date.now()}.${ext}`;
+		const imgRef = ref(storage, filename);
 
-	// Upload image to Firebase
-	const result = await uploadBytes(imgRef, req.file.buffer);
+		// Upload image to Firebase
+		const result = await uploadBytes(imgRef, file.buffer);
 
-	await PostImg.create({
-		postId: newPost.id,
-		imgUrl: result.metadata.fullPath,
+		await PostImg.create({
+			postId: newPost.id,
+			imgUrl: result.metadata.fullPath,
+		});
 	});
+
+	await Promise.all(postImgsPromises);
 
 	res.status(201).json({
 		status: 'success',
