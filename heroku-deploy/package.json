@@ -3,18 +3,25 @@
 	"version": "1.0.0",
 	"description": "A simple Express server",
 	"main": "index.js",
+	"engines": {
+		"node": "16.x"
+	},
 	"scripts": {
-		"start": "nodemon server.js"
+		"start": "node server.js",
+		"start:dev": "nodemon server.js"
 	},
 	"author": "Maximiliano Rangel",
 	"license": "ISC",
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
+		"compression": "^1.7.4",
 		"dotenv": "^16.0.2",
 		"express": "^4.18.1",
 		"express-validator": "^6.14.2",
 		"firebase": "^9.10.0",
+		"helmet": "^6.0.0",
 		"jsonwebtoken": "^8.5.1",
+		"morgan": "^1.10.0",
 		"multer": "^1.4.5-lts.1",
 		"pg": "^8.8.0",
 		"pg-hstore": "^2.3.4",
