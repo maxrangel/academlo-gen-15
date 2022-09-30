@@ -41,11 +41,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 });
 
 const createUser = catchAsync(async (req, res, next) => {
-	const { name, email, password, role } = req.body;
-
-	if (role !== 'admin' && role !== 'normal') {
-		return next(new AppError('Invalid role', 400));
-	}
+	const { name, email, password } = req.body;
 
 	// Encrypt the password
 	const salt = await bcrypt.genSalt(12);
@@ -55,7 +51,6 @@ const createUser = catchAsync(async (req, res, next) => {
 		name,
 		email,
 		password: hashedPassword,
-		role,
 	});
 
 	// Remove password from response

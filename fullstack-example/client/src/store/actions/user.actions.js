@@ -3,19 +3,19 @@ import axios from 'axios';
 import { usersActions } from '../slices/user.slice';
 import { errorActions } from '../slices/error.slice';
 
-const API_URL = '';
+const API_URL = 'http://localhost:4000/api/v1/users';
 
 export const login = (email, password) => {
 	return async dispatch => {
 		try {
 			// API REQUEST
-			const res = await axios.post(``, {});
+			const res = await axios.post(`${API_URL}/login`, { email, password });
 
-			dispatch(
-				usersActions.login({
-					user: {}, // Get user from response
-				})
-			);
+			const { user, token } = res.data.data;
+
+			localStorage.setItem('token', token);
+
+			dispatch(usersActions.login({ user }));
 		} catch (error) {
 			dispatch(errorActions.setError({ error: error.response.data }));
 		}
@@ -26,7 +26,7 @@ export const signup = userData => {
 	return async dispatch => {
 		try {
 			// API REQUEST
-			await axios.post(``, {});
+			await axios.post(`${API_URL}`, userData);
 		} catch (error) {
 			dispatch(errorActions.setError({ error: error.response.data }));
 		}
