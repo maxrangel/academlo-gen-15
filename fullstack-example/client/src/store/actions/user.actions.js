@@ -46,10 +46,17 @@ export const logout = () => {
 export const checkToken = () => {
 	return async dispatch => {
 		try {
-			const res = await axios.get(``, {});
+			const token = localStorage.getItem('token');
 
-			dispatch(usersActions.refreshUser({ user: {} }));
+			const res = await axios.get(`${API_URL}/check-token`, {
+				headers: { authorization: `Bearer ${token}` },
+			});
+
+			const { user } = res.data.data;
+
+			dispatch(usersActions.refreshUser({ user }));
 		} catch (error) {
+			localStorage.removeItem('token');
 			dispatch(logout());
 		}
 	};

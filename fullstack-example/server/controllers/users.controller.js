@@ -123,10 +123,20 @@ const login = catchAsync(async (req, res, next) => {
 	});
 });
 
+const checkToken = catchAsync(async (req, res, next) => {
+	const { sessionUser } = req;
+
+	res.status(200).json({
+		status: 'success',
+		data: { user: sessionUser },
+	});
+});
+
 module.exports = {
 	getAllUsers,
 	createUser,
 	updateUser,
 	deleteUser,
 	login,
+	checkToken,
 };
