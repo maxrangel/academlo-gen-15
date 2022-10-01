@@ -3,20 +3,24 @@ import axios from 'axios';
 import { postsActions } from '../slices/posts.slice';
 import { errorActions } from '../slices/error.slice';
 
-const API_URL = '';
+const API_URL = 'http://localhost:4000/api/v1/posts';
 
 export const getPosts = () => {
 	return async dispatch => {
 		try {
 			// API REQUEST
+			const token = localStorage.getItem('token');
 
-			const res = await axios.get(API_URL, {});
+			const res = await axios.get(API_URL, {
+				headers: { authorization: `Bearer ${token}` },
+			});
 
 			// Get response data
+			const { posts } = res.data.data;
 
 			dispatch(
 				postsActions.getPosts({
-					posts: [], // Replace with real data!
+					posts,
 				})
 			);
 		} catch (error) {
