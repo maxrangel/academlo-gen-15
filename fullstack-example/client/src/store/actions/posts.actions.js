@@ -34,7 +34,15 @@ export const submitPost = (title, content) => {
 		try {
 			// API REQUEST
 
-			const res = await axios.post(API_URL, {}, {});
+			const token = localStorage.getItem('token');
+
+			const res = await axios.post(
+				API_URL,
+				{ title, content },
+				{
+					headers: { authorization: `Bearer ${token}` },
+				}
+			);
 
 			const { newPost, name } = res.data.data;
 
@@ -51,6 +59,14 @@ export const updatePost = (id, title, content) => {
 	return async dispatch => {
 		try {
 			// API REQUEST
+			const token = localStorage.getItem('token');
+
+			await axios.patch(
+				`${API_URL}/${id}`,
+				{ title, content },
+				{ headers: { authorization: `Bearer ${token}` } }
+			);
+
 			dispatch(postsActions.updatePost({ id, title, content }));
 		} catch (error) {
 			dispatch(errorActions.setError({ error: error.response.data }));
@@ -62,6 +78,12 @@ export const deletePost = id => {
 	return async dispatch => {
 		try {
 			// API REQUEST
+			const token = localStorage.getItem('token');
+
+			await axios.delete(`${API_URL}/${id}`, {
+				headers: { authorization: `Bearer ${token}` },
+			});
+
 			dispatch(postsActions.deletePost({ id }));
 		} catch (error) {
 			dispatch(errorActions.setError({ error: error.response.data }));

@@ -36,6 +36,7 @@ export const signup = userData => {
 export const logout = () => {
 	return async dispatch => {
 		try {
+			localStorage.removeItem('token');
 			dispatch(usersActions.logout());
 		} catch (error) {
 			dispatch(errorActions.setError({ error: error.response.data }));

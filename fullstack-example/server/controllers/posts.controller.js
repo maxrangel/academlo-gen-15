@@ -10,6 +10,10 @@ const getAllPosts = catchAsync(async (req, res, next) => {
 	const posts = await Post.findAll({
 		where: { status: 'active' },
 		attributes: ['id', 'title', 'content', 'createdAt'],
+		order: [
+			// ['column', 'DESC | ASC']
+			['createdAt', 'DESC'],
+		],
 		include: [
 			{ model: User, attributes: ['id', 'name'] },
 			{
