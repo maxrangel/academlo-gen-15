@@ -41,7 +41,7 @@ const PostItem = ({ post }) => {
 		user && (
 			<Card
 				actions={
-					post.userId === user.id && [
+					+post.userId === +user.id && [
 						<EditOutlined onClick={onEditHandler} key='edit' />,
 						<DeleteOutlined
 							onClick={onDeleteHandler}

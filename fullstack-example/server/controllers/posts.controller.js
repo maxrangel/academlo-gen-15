@@ -9,7 +9,7 @@ const { catchAsync } = require('../utils/catchAsync.util');
 const getAllPosts = catchAsync(async (req, res, next) => {
 	const posts = await Post.findAll({
 		where: { status: 'active' },
-		attributes: ['id', 'title', 'content', 'createdAt'],
+		attributes: ['id', 'title', 'userId', 'content', 'createdAt'],
 		order: [
 			// ['column', 'DESC | ASC']
 			['createdAt', 'DESC'],
