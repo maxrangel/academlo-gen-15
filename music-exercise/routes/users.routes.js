@@ -22,7 +22,7 @@ const {
 
 const usersRouter = express.Router();
 
-usersRouter.post('/', createUserValidators, createUser);
+usersRouter.post('/signup', createUserValidators, createUser);
 
 usersRouter.post('/login', login);
 
