@@ -5,6 +5,7 @@ const { User } = require('../models/user.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync.util');
+const { uploadProductImgs } = require('../utils/firebase.util');
 
 const getAllProducts = catchAsync(async (req, res, next) => {
   const products = await Product.findAll({
@@ -37,7 +38,7 @@ const createProduct = catchAsync(async (req, res, next) => {
     userId: sessionUser.id,
   });
 
-  // TODO: Upload image
+  await uploadProductImgs(req.files, newProduct.id);
 
   res.status(201).json({ newProduct });
 });

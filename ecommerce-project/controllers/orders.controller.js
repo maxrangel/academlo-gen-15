@@ -58,7 +58,52 @@ const addProductToCart = catchAsync(async (req, res, next) => {
   });
 });
 
-const updateProductInCart = catchAsync(async (req, res, next) => {});
+const updateProductInCart = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+  const { productId, newQty } = req.body;
+
+  const cart = await Cart.findOne({
+    where: { userId: sessionUser.id, status: 'active' },
+  });
+
+  if (!cart) {
+    return next(new AppError('You do not have a cart active.', 400));
+  }
+
+  // Validate that requested qty doesnt exceed the available qty
+  const product = await Product.findOne({
+    where: { id: productId, status: 'active' },
+  });
+
+  if (!product) {
+    return next(new AppError('Product does not exists', 404));
+  } else if (newQty > product.quantity) {
+    return next(
+      new AppError(`This product only has ${product.quantity} items.`, 400)
+    );
+  } else if (0 > newQty) {
+    return next(new AppError('Cannot send negative values', 400));
+  }
+
+  const productInCart = await ProductInCart.findOne({
+    where: { cartId: cart.id, productId, status: 'active' },
+  });
+
+  if (!productInCart) {
+    return next(new AppError('This product is not in your cart', 404));
+  }
+
+  if (newQty === 0) {
+    // Remove product from cart
+    await productInCart.update({ quantity: 0, status: 'removed' });
+  } else if (newQty > 0) {
+    await productInCart.update({ quantity: newQty });
+  }
+
+  res.status(200).json({
+    status: 'success',
+  });
+});
 
 const purchaseCart = catchAsync(async (req, res, next) => {});
 
