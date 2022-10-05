@@ -69,9 +69,45 @@ const deletePost = catchAsync(async (req, res, next) => {
 	});
 });
 
+const getMyPosts = catchAsync(async (req, res, next) => {
+	const { sessionUser } = req;
+
+	const posts = await Post.findAll({
+		where: { status: 'active', userId: sessionUser.id },
+		include: [
+			{ model: User, attributes: { exclude: ['password'] } },
+			{ model: Comment },
+		],
+	});
+
+	res.status(200).json({
+		status: 'success',
+		data: { posts },
+	});
+});
+
+const getUsersPosts = catchAsync(async (req, res, next) => {
+	const { userId } = req.params;
+
+	const posts = await Post.findAll({
+		where: { userId, status: 'active' },
+		include: [
+			{ model: User, attributes: { exclude: ['password'] } },
+			{ model: Comment },
+		],
+	});
+
+	res.status(200).json({
+		status: 'success',
+		data: { posts },
+	});
+});
+
 module.exports = {
 	getAllPosts,
 	createPost,
 	updatePost,
 	deletePost,
+	getMyPosts,
+	getUsersPosts,
 };

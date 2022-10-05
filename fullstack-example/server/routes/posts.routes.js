@@ -6,6 +6,8 @@ const {
 	createPost,
 	updatePost,
 	deletePost,
+	getMyPosts,
+	getUsersPosts,
 } = require('../controllers/posts.controller');
 
 // Middlewares
@@ -23,6 +25,10 @@ const postsRouter = express.Router();
 postsRouter.use(protectSession);
 
 postsRouter.get('/', getAllPosts);
+
+postsRouter.get('/me', getMyPosts);
+
+postsRouter.get('/profile/:userId', getUsersPosts);
 
 postsRouter.post('/', createPostValidators, createPost);
 

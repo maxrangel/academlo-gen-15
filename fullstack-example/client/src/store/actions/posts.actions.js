@@ -95,9 +95,13 @@ export const getMyPosts = () => {
 	return async dispatch => {
 		try {
 			// Create endpoint to only get the session user's posts
-			const res = await axios.get(`${API_URL}/me`, {});
+			const token = localStorage.getItem('token');
 
-			const { posts } = res.data;
+			const res = await axios.get(`${API_URL}/me`, {
+				headers: { authorization: `Bearer ${token}` },
+			});
+
+			const { posts } = res.data.data;
 
 			dispatch(postsActions.getPosts({ posts }));
 		} catch (error) {
@@ -109,10 +113,14 @@ export const getMyPosts = () => {
 export const getProfilePosts = userId => {
 	return async dispatch => {
 		try {
-			// Create endpoint to get a user's posts given an id by params
-			const res = await axios.get(`${API_URL}/profile/${userId}`, {});
+			const token = localStorage.getItem('token');
 
-			const { posts } = res.data;
+			// Create endpoint to get a user's posts given an id by params
+			const res = await axios.get(`${API_URL}/profile/${userId}`, {
+				headers: { authorization: `Bearer ${token}` },
+			});
+
+			const { posts } = res.data.data;
 
 			dispatch(postsActions.getPosts({ posts }));
 		} catch (error) {

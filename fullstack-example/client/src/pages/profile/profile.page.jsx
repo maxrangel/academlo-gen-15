@@ -29,7 +29,7 @@ const Profile = () => {
 		}
 	}, [dispatch, isAuth, navigate]);
 
-	const profileOwner = +params.id === user.id;
+	const profileOwner = +params.id === +user.id;
 
 	useEffect(() => {
 		// Check if this profile belongs to the session user (state)
