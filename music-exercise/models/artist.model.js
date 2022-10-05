@@ -17,7 +17,7 @@ const Artist = db.define('artist', {
 	},
 	imgUrl: {
 		type: DataTypes.STRING,
-		allowNull: false,
+		allowNull: true,
 	},
 	status: {
 		type: DataTypes.STRING,
