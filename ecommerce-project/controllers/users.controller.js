@@ -82,7 +82,7 @@ const login = catchAsync(async (req, res, next) => {
 
   // Generate JWT
   const token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: '30d',
   });
 
   user.password = undefined;
