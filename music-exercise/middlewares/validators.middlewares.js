@@ -37,4 +37,18 @@ const createUserValidators = [
 	checkValidations,
 ];
 
-module.exports = { createUserValidators };
+const createArtistValidators = [
+	body('name')
+		.isString()
+		.withMessage('Name must be a string')
+		.notEmpty()
+		.withMessage('Name cannot be empty'),
+	body('genre')
+		.isString()
+		.withMessage('Genre must be a string')
+		.notEmpty()
+		.withMessage('Genre cannot be empty'),
+	checkValidations,
+];
+
+module.exports = { createUserValidators, createArtistValidators };

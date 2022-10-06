@@ -11,6 +11,10 @@ const {
 
 // Middleware
 const { protectSession } = require('../middlewares/auth.middlewares');
+const { artistExists } = require('../middlewares/artists.middlewares');
+const {
+	createArtistValidators,
+} = require('../middlewares/validators.middlewares');
 
 // Utils
 const { upload } = require('../utils/multer.util');
@@ -21,12 +25,22 @@ artistsRouter.get('/', getAllArtists);
 
 artistsRouter.use(protectSession);
 
-artistsRouter.post('/', upload.single('artistPhoto'), createArtist);
+artistsRouter.post(
+	'/',
+	upload.single('artistPhoto'),
+	createArtistValidators,
+	createArtist
+);
 
-artistsRouter.patch('/:id', updateArtist);
+artistsRouter.patch('/:id', artistExists, updateArtist);
 
-artistsRouter.delete('/:id', deleteArtist);
+artistsRouter.delete('/:id', artistExists, deleteArtist);
 
-artistsRouter.post('/albums/:artistId', createAlbum);
+artistsRouter.post(
+	'/albums/:artistId',
+	upload.single('albumPhoto'),
+	artistExists,
+	createAlbum
+);
 
 module.exports = { artistsRouter };

@@ -1,5 +1,10 @@
 const { initializeApp } = require('firebase/app');
-const { getStorage, ref, uploadBytes } = require('firebase/storage');
+const {
+	getStorage,
+	ref,
+	uploadBytes,
+	getDownloadURL,
+} = require('firebase/storage');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
@@ -15,17 +20,17 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 const storage = getStorage(firebaseApp);
 
-const uploadArtistPhoto = async (img, artistId) => {
+const uploadPhoto = async (img, id, folderName) => {
 	try {
 		// name.jpg
 		const [filename, extension] = img.originalname.split('.');
 
-		const artistImg = `${
+		const imgPath = `${
 			process.env.NODE_ENV
-		}/artist/${artistId}/${filename}-${Date.now()}.${extension}`;
+		}/${folderName}/${id}/${filename}-${Date.now()}.${extension}`;
 
 		// Create ref
-		const imgRef = ref(storage, artistImg);
+		const imgRef = ref(storage, imgPath);
 
 		// Upload img
 		const result = await uploadBytes(imgRef, img.buffer);
@@ -36,4 +41,32 @@ const uploadArtistPhoto = async (img, artistId) => {
 	}
 };
 
-module.exports = { uploadArtistPhoto };
+const getArtistsPhotos = async artists => {
+	const artistsPromises = artists.map(async artist => {
+		// Get albums photos
+		const albumsPromises = artist.albums.map(async album => {
+			const albumRef = ref(storage, album.imgUrl);
+
+			const albumUrl = await getDownloadURL(albumRef);
+
+			album.imgUrl = albumUrl;
+
+			return album;
+		});
+
+		const albumsWithImgs = await Promise.all(albumsPromises);
+
+		const imgRef = ref(storage, artist.imgUrl);
+
+		const imgUrl = await getDownloadURL(imgRef);
+
+		artist.imgUrl = imgUrl;
+		artist.albums = albumsWithImgs;
+
+		return artist;
+	});
+
+	return await Promise.all(artistsPromises);
+};
+
+module.exports = { uploadPhoto, getArtistsPhotos };
