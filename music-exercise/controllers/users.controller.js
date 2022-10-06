@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 // Models
 const { User } = require('../models/user.model');
+const { Song } = require('../models/song.model');
 
 // Utils
 const { catchAsync } = require('../utils/catchAsync.util');
@@ -18,6 +19,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 	const users = await User.findAll({
 		attributes: { exclude: ['password'] },
 		where: { status: 'active' },
+		include: { model: Song, through: { where: { favorite: true } } },
 	});
 
 	res.status(200).json({

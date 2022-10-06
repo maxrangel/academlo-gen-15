@@ -3,6 +3,7 @@ const express = require('express');
 // Routers
 const { usersRouter } = require('./routes/users.routes');
 const { artistsRouter } = require('./routes/artists.routes');
+const { songsRouter } = require('./routes/songs.routes');
 
 // Controllers
 const { globalErrorHandler } = require('./controllers/error.controller');
@@ -16,6 +17,7 @@ app.use(express.json());
 // Define endpoints
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/artists', artistsRouter);
+app.use('/api/v1/songs', songsRouter);
 
 // Global error handler
 app.use(globalErrorHandler);
