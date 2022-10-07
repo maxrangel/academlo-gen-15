@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 // Routers
 const { usersRouter } = require('./routes/users.routes');
@@ -15,14 +16,21 @@ const app = express();
 // Enable Express app to receive JSON data
 app.use(express.json());
 
+// Enable static files on public folder (render files on html)
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Enable cors
 app.use(cors());
 
 // Define endpoints
-// /posts
 app.use('/api/v1/users', usersRouter);
-app.use('/api/v1/posts', postsRouter); // next(error)
+app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/comments', commentsRouter);
+app.use('/', (req, res, next) => {
+	const indexPath = path.join(__dirname, 'public', 'index.html');
+
+	res.status(200).sendFile(indexPath);
+});
 
 // Global error handler
 app.use(globalErrorHandler);
