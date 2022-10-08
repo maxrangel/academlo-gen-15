@@ -4,7 +4,8 @@
 	"description": "A simple Express server",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon server.js"
+		"start": "node server.js",
+		"start:dev": "nodemon server.js"
 	},
 	"author": "Maximiliano Rangel",
 	"license": "ISC",
